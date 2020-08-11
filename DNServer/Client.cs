@@ -12,9 +12,9 @@ namespace DNServer
     class Client
     {
 
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private static Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-        public Message Lookup(Message message)
+        public static Message Lookup(Message message)
         {
             byte[] messageData = message.Serialize();
             if (messageData.Length > 512)

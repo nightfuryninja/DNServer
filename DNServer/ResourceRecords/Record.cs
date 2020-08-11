@@ -6,7 +6,7 @@ namespace DNServer
     public abstract class Record
     {
 
-        public Domain Name { get; set; }
+        public Domain Domain { get; set; }
 
         public RecordType Type { get; set; }
 
@@ -14,7 +14,7 @@ namespace DNServer
 
         public Record(Domain name = null, RecordType type = RecordType.A, RecordClass recordClass = RecordClass.IN)
         {
-            Name = name;
+            Domain = name;
             Type = type;
             Class = recordClass;
         }
@@ -28,7 +28,7 @@ namespace DNServer
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.Write(Domain.Serialize(Name));
+                writer.Write(Domain.Serialize(Domain));
                 writer.WriteBE((ushort)Type);
                 writer.WriteBE((ushort)Class);
                 return stream.ToArray();
@@ -41,7 +41,7 @@ namespace DNServer
         /// <returns></returns>
         public virtual void Deserialize(BinaryReader reader)
         {
-            Name = Domain.Deserialize(reader);
+            Domain = Domain.Deserialize(reader);
             Type = (RecordType)reader.ReadInt16();
             Class = (RecordClass)reader.ReadInt16();
         }
