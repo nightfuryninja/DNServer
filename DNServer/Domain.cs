@@ -43,19 +43,18 @@ namespace DNServer
         /// Converts a length-prefixed byte array to a string.
         /// </summary>
         /// <returns></returns>
-        public static Domain Deserialize(Stream stream)
+
+        public static Domain Deserialize(BinaryReader reader)
         {
-            using (BinaryReader reader = new BinaryReader(stream))
-            {
                 StringBuilder builder = new StringBuilder();
                 while(reader.ReadByte() != 0)
                 {
-                    stream.Position -= 1;
+                    reader.BaseStream.Position -= 1;
                     builder.Append("." + reader.ReadString());
                 }
                 builder.Remove(0, 1);
                 return new Domain(builder.ToString());
-            }
+            
         }
 
     }

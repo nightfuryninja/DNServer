@@ -41,7 +41,7 @@ namespace DNServer
                 await UDPSocket.ReceiveAsync(buffer, SocketFlags.None);
                 
                 Message request = new Message();
-                request.Deserialize(new MemoryStream(buffer.Array));
+                //request.Deserialize(new MemoryStream(buffer.Array));
 
 
             }

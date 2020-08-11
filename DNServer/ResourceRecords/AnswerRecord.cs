@@ -15,36 +15,37 @@ namespace DNServer
 
         public IPAddress Address { get; set; }
 
-        public AnswerRecord(Domain domain) : base(domain)
+        public AnswerRecord(Domain domain = null) : base(domain, RecordType.A)
         {
-            
+
         }
 
         /// <summary>
-        /// 
-        /// 0.+-
+        /// Serializes a Answer Record object into a byte array.
         /// </summary>
         /// <param name="record"></param>
         /// <returns></returns>
-        public static byte[] Serialize(AnswerRecord record)
+        public override byte[] Serialize() 
         {
             using (MemoryStream stream = new MemoryStream())
             {
-                stream.Write(Record.Serialize(record));
-                stream.Write(record.Address.GetAddressBytes());
+                stream.Write(base.Serialize());
+                stream.Write(Address.GetAddressBytes());
                 return stream.ToArray();
             }
         }
 
-        public AnswerRecord Deserialize(byte[] data)
+        /// <summary>
+        /// Deserializes a byte array to an Answer Record object.
+        /// </summary>
+        /// <param name="reader"></param>
+        public override void Deserialize(BinaryReader reader)
         {
-            using (BinaryReader reader = new BinaryReader(new MemoryStream(data)))
-            {
-                AnswerRecord record = new AnswerRecord(new Domain(""));
-                return new AnswerRecord(new Domain(""));
-            }
+            base.Deserialize(reader);
+            TTL = reader.ReadUInt32();
+            DataSize = reader.ReadUInt16();
+            Address = new IPAddress(reader.ReadBytes(DataSize));
         }
-
 
     }
 }

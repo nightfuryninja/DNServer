@@ -7,7 +7,8 @@ namespace DNServer
 {
     class RootServers
     {
-        public static IPAddress Av4 = IPAddress.Parse("198.41.0.4");
+
+        public static readonly IPAddress Av4 = IPAddress.Parse("198.41.0.4");
         public static readonly IPAddress Av6 = IPAddress.Parse("2001:503:ba3e::2:30");
 
         public static readonly IPAddress Bv4 = IPAddress.Parse("199.9.14.201");
@@ -44,6 +45,7 @@ namespace DNServer
         public static readonly IPAddress Lv6 = IPAddress.Parse("2001:500:9f::42");
 
         public static readonly IPAddress Mv4 = IPAddress.Parse("202.12.27.33");
-        public static readonly IPAddress Mv6 = IPAddress.Parse("2001:dc3::35");    
+        public static readonly IPAddress Mv6 = IPAddress.Parse("2001:dc3::35");   
+        
     }
 }

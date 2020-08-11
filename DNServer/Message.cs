@@ -56,7 +56,7 @@ namespace DNServer
         {
             get { return (RCode)flag[1].GetBitValueAt(4, 4); }
             set { flag[1].SetBitValueAt(6, 4, (byte)value); }
-        }
+        } 
 
         public ushort ANCount { get; set; }
 
@@ -77,68 +77,88 @@ namespace DNServer
         public Message()
         {
             MessageID = (ushort)random.Next(0, 65535);
+            RecursionDesired = true;
         }
 
-        public static byte[] Serialize(Message request)
+        /// <summary>
+        /// Serializes a message object into a byte array.
+        /// </summary>
+        /// <returns></returns>
+        public byte[] Serialize()
         {
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.WriteBE(request.MessageID);
-                writer.Write(request.flag);
-                writer.WriteBE((ushort)request.QueryRecord.Count);
-                writer.WriteBE((ushort)request.AnswerRecords.Count);
-                writer.WriteBE((ushort)request.NameServerRecords.Count);
-                writer.WriteBE((ushort)request.AdditionalRecords.Count);
-                foreach (Record record in request.QueryRecord)
+                writer.WriteBE(MessageID);
+                writer.Write(flag);
+                writer.WriteBE((ushort)QueryRecord.Count);
+                writer.WriteBE((ushort)AnswerRecords.Count);
+                writer.WriteBE((ushort)NameServerRecords.Count);
+                writer.WriteBE((ushort)AdditionalRecords.Count);
+                foreach (Record record in QueryRecord)
                 {
-                    writer.Write(Record.Serialize(record));
+                    writer.Write(record.Serialize());
                 }
-                foreach(Record record in request.AnswerRecords)
+                foreach(Record record in AnswerRecords)
                 {
-                    writer.Write(Record.Serialize(record));
+                    writer.Write(record.Serialize());
                 }
-                foreach (Record record in request.NameServerRecords)
+                foreach (Record record in NameServerRecords)
                 {
-                    writer.Write(Record.Serialize(record));
+                    writer.Write(record.Serialize());
                 }
-                foreach (Record record in request.NameServerRecords)
+                foreach (Record record in NameServerRecords)
                 {
-                    writer.Write(Record.Serialize(record));
+                    writer.Write(record.Serialize());
                 }
                 return stream.ToArray();
             }
         }
 
-        public void Deserialize(Stream stream)
+        /// <summary>
+        /// Deserializes a byte array into a message object.
+        /// </summary>
+        /// <param name="stream"></param>
+        public void Deserialize(byte[] data)
         {
+            using(MemoryStream stream = new MemoryStream(data))
             using (BinaryReader reader = new BinaryReader(stream))
             {
-                Message message = new Message();
-                message.MessageID = reader.ReadUInt16();
-                message.flag = reader.ReadBytes(2);
-                message.QueryRecord.Capacity = reader.ReadUInt16();
-                ushort AnswerRecords = reader.ReadUInt16();
-                ushort NameServerRecords = reader.ReadUInt16();
-                ushort AdditionalRecords = reader.ReadUInt16();
-                //for (int i = 0; i < message.QueryRecord.Capacity; i++)
+                MessageID = reader.ReadUInt16();
+                flag = reader.ReadBytes(2);
+                ushort QueryRecordCount = reader.ReadUint16BE();
+                ANCount= reader.ReadUint16BE();
+                ushort NameServerRecordCount = reader.ReadUint16BE();
+                ushort AdditionalRecordCount = reader.ReadUint16BE();
+                //for (int i = 0; i < QueryRecordCount; i++)
                 //{
-                //    message.QueryRecord.Add(new Record());
+                //    QueryRecord record = new QueryRecord();
+                //    record.Deserialize(reader);
+                //    QueryRecord.Add(record);
                 //}
-                //for (int i = 0; i < AnswerRecords; i++)
-                //{
-                //    message.AnswerRecords.Add(AnswerRecord.Deserialize());
-                //}
-                //for (int i = 0; i < NameServerRecords; i++)
+                //DeserializeAnswerRecords(reader);
+
+
+                //for (int i = 0; i < NameServerRecordCount; i++)
                 //{
 
                 //}
-                //for (int i = 0; i < AdditionalRecords; i++)
+                //for (int i = 0; i < AdditionalRecordCount; i++)
                 //{
 
                 //}
             }
         }
+
+        //private void DeserializeAnswerRecords(BinaryReader reader, RecordType type)
+        //{
+        //    for (int i = 0; i < ANCount; i++)
+        //    {
+        //        Record record = new AnswerRecord();
+        //        record.Deserialize(reader);
+        //        AnswerRecords.Add(record);
+        //    }
+        //}
 
     }
 }

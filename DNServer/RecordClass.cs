@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DNServer
+﻿namespace DNServer
 {
     public enum RecordClass
     {
